@@ -14,6 +14,7 @@ const DATASET = {
   'AMAZON DAILY': 'amazon_daily',
   'AMAZON HOURLY': 'amazon_hourly'
 }
+const SERVER_URL = 'http://127.0.0.1:8000'
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
@@ -41,51 +42,65 @@ export default function Home() {
   const handleOnSubmit = async () => {
     setIsShowResults(true)
     setIsLoading(true)
-    const response  = await fetch('https://jsonplaceholder.typicode.com/todos/1')
-    console.log(response.json())
+    const response = await fetch(`${SERVER_URL}/models/${modelName}?sentence=${text}&data=${dataset}`, {
+      noCache: true
+    })
+    const { result } = await response.json()
+
+    if (result == '1') setIsTrendUp(true)
+    else setIsTrendUp(false)
+
     setIsLoading(false)
   }
 
-  const renderTrendUp = () => (isShowResults && !isLoading && isTrendUp) && (
-    <div className='flex flex-col items-center justify-center'>
-      <svg
-        class='text-blue-400 w-36 h-36'
-        xmlns='http://www.w3.org/2000/svg'
-        width='24'
-        height='24'
-        fill='none'
-        viewBox='0 0 24 24'
-        stroke='currentColor'
-      >
-        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' />
-      </svg>
-      <p className='font-bold text-blue-400 text-base mt-2'>The Trend is upward!😁</p>
-    </div>
-  )
+  const renderTrendUp = () =>
+    isShowResults &&
+    !isLoading &&
+    isTrendUp && (
+      <div className='flex flex-col items-center justify-center'>
+        <svg
+          class='text-blue-400 w-36 h-36'
+          xmlns='http://www.w3.org/2000/svg'
+          width='24'
+          height='24'
+          fill='none'
+          viewBox='0 0 24 24'
+          stroke='currentColor'
+        >
+          <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' />
+        </svg>
+        <p className='font-bold text-blue-400 text-base mt-2'>The Trend is upward!😁</p>
+      </div>
+    )
 
-  const renderTrendDown = () => (isShowResults && !isLoading && !isTrendUp) && (
-    <div className='flex flex-col items-center justify-center'>
-      <svg
-        class='text-blue-400 w-36 h-36'
-        xmlns='http://www.w3.org/2000/svg'
-        width='24'
-        height='24'
-        fill='none'
-        viewBox='0 0 24 24'
-        stroke='currentColor'
-      >
-        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 17h8m0 0V9m0 8l-8-8-4 4-6-6' />
-      </svg>
+  const renderTrendDown = () =>
+    isShowResults &&
+    !isLoading &&
+    !isTrendUp && (
+      <div className='flex flex-col items-center justify-center'>
+        <svg
+          class='text-blue-400 w-36 h-36'
+          xmlns='http://www.w3.org/2000/svg'
+          width='24'
+          height='24'
+          fill='none'
+          viewBox='0 0 24 24'
+          stroke='currentColor'
+        >
+          <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 17h8m0 0V9m0 8l-8-8-4 4-6-6' />
+        </svg>
 
-      <p className='font-bold text-blue-400 text-base mt-2'>The Trend is Downward!😓</p>
-    </div>
-  )
+        <p className='font-bold text-blue-400 text-base mt-2'>The Trend is Downward!😓</p>
+      </div>
+    )
 
-  const renderLoading = () => (isShowResults && isLoading) && (
-    <div className='flex flex-col items-center justify-center'>
-      <h1 className='text-2xl text-white'>Loading...</h1>
-    </div>
-  )
+  const renderLoading = () =>
+    isShowResults &&
+    isLoading && (
+      <div className='flex flex-col items-center justify-center'>
+        <h1 className='text-2xl text-white'>Loading...</h1>
+      </div>
+    )
 
   return (
     <main className='flex min-h-screen flex-col items-center m-10 font-serif'>
@@ -135,8 +150,13 @@ export default function Home() {
             </select>
           </div>
           <div className='flex flex-row  justify-around items-center'>
-            <button className='bg-blue-400 mt-12 hover:bg-blue-200 flex-2 py-2 px-4' onClick={handleOnSubmit}>Check the trend 💭</button>
-            <button className='border-2 border-blue-400 mt-12 hover:bg-blue-200 text-white py-2 px-4' onClick={handleOnReset}>
+            <button className='bg-blue-400 mt-12 hover:bg-blue-200 flex-2 py-2 px-4' onClick={handleOnSubmit}>
+              Check the trend 💭
+            </button>
+            <button
+              className='border-2 border-blue-400 mt-12 hover:bg-blue-200 text-white py-2 px-4'
+              onClick={handleOnReset}
+            >
               Restart 🧹
             </button>
           </div>
