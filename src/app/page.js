@@ -15,6 +15,8 @@ const DATASET = {
   'AMAZON HOURLY': 'amazon_hourly'
 }
 
+const SERVER_URL = 'http://192.168.0.104:8000'
+
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
   const [isShowResults, setIsShowResults] = useState(false)
@@ -41,7 +43,11 @@ export default function Home() {
   const handleOnSubmit = async () => {
     setIsShowResults(true)
     setIsLoading(true)
-    const response  = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+    const response  = await fetch(`${SERVER_URL}/models/${modelName}?sentence=${text}&data=${dataset}`, {
+      headers: new Headers({
+        UserAgent: "someone@yahoo.com"
+      })
+    })
     console.log(response.json())
     setIsLoading(false)
   }
